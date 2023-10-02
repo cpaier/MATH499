@@ -1,9 +1,0 @@
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from scipy.stats import poisson
-
-stats = pd.read_csv("")  #get data file
-
-
-# mu = OA*VB
