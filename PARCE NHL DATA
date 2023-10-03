@@ -6,27 +6,12 @@ from scipy.stats import poisson
 ALL = pd.read_csv('NHL_ALL.csv')  # Read NHL_ALL file
 
 # Create subset data frames by situation
-NHL_ALL_other = ALL[ALL['situation'] == 'other']
-NHL_ALL_all = ALL[ALL['situation'] == 'all']
-NHL_ALL_5on5 = ALL[ALL['situation'] == '5on5']
-NHL_ALL_4on5 = ALL[ALL['situation'] == '4on5']
-NHL_ALL_5on4 = ALL[ALL['situation'] == '5on4']
+NHL_ALL = ALL[ALL['situation'] == 'all']
 
 # Take necessary columns/discard auxillary data
-NHL_ALL_other = pd.DataFrame(NHL_ALL_other[["playerTeam", "opposingTeam", "gameId", "goalsFor", "goalsAgainst"]])
-NHL_ALL_all = pd.DataFrame(NHL_ALL_all[["playerTeam", "opposingTeam", "gameId", "goalsFor", "goalsAgainst"]])
-NHL_ALL_5on5 = pd.DataFrame(NHL_ALL_5on5[["playerTeam", "opposingTeam", "gameId", "goalsFor", "goalsAgainst"]])
-NHL_ALL_4on5 = pd.DataFrame(NHL_ALL_4on5[["playerTeam", "opposingTeam", "gameId", "goalsFor", "goalsAgainst"]])
-NHL_ALL_5on4 = pd.DataFrame(NHL_ALL_5on4[["playerTeam", "opposingTeam", "gameId", "goalsFor", "goalsAgainst"]])
+NHL_ALL = pd.DataFrame(NHL_ALL[["playerTeam", "opposingTeam", "gameId", "goalsFor", "goalsAgainst"]]).set_index('gameId')
 
-# Combine individual data sets into one and group by team/game
-NHL_ALL = pd.concat([NHL_ALL_other, NHL_ALL_all, NHL_ALL_5on5, NHL_ALL_4on5, NHL_ALL_5on4])
+# create array of all team names
 TEAMS = NHL_ALL['playerTeam'].unique()
-NHL_ALL = NHL_ALL.groupby(["playerTeam", "opposingTeam", "gameId"]).sum()
 
 print(NHL_ALL.head())
-
-# Create table array of number of games between teams
-NO_GAMES = pd.DataFrame(np.zeros([len(TEAMS), len(TEAMS)]), columns=[TEAMS], index=[TEAMS])
-
-# Iterate through NHL_ALL and count games into NO_GAMES
