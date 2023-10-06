@@ -1,0 +1,21 @@
+# Use scipy.optimize.fsolve to solve nonlinear system
+from scipy import optimize
+
+# Declare variables for matrices
+P = NO_GAMES.to_numpy()
+zeroMat = np.zeros((len(TEAMS), len(TEAMS)))
+f = NHL_ALL.groupby(['playerTeam'])['goalsFor'].sum().to_numpy()
+c = NHL_ALL.groupby(['playerTeam'])['goalsAgainst'].sum().to_numpy()
+
+# Define function to obtain x vector
+def func(x):
+    return(np.matmul(np.transpose(x), np.block([[zeroMat, P],[np.transpose(P), zeroMat]]))*x  - np.transpose(np.hstack((f,c))))
+
+# Call function to get vector of O and V
+x = optimize.fsolve(func, np.ones(2*len(TEAMS)))
+# x includes both offensive strengths and defensive vulnerabilities
+# Split it up
+O = x[0:int((len(x))/2)]
+V = x[int((len(x))/2):]
+
+print(O, V)
